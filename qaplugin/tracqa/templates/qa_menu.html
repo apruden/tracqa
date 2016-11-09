@@ -1,0 +1,29 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  py:strip="True">
+  <div id="tabs">
+    <ul>
+      <li>QA
+      <ul>
+        <li >
+        <a href="${req.href.qa('testplan/index')}">Test plans</a>
+        </li>
+        <li >
+        <a href="${req.href.qa('testrun/index')}">Test runs</a>
+        </li>
+        <li >
+        <a href="${req.href.qa('testsuite/index')}">Test suites</a>
+        </li>
+        <li >
+        <a href="${req.href.qa('testcase/index')}">Test cases</a>
+        </li>
+      </ul>
+      </li>
+      <li>
+      <ul>
+        <li><a href="${req.href.qa('assignment')}">Assigments</a></li>
+      </ul>
+      </li> 
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi=
+  "http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title></title>
+    <script type="text/javascript">
+      //<![CDATA[
+    jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").filter("[id]").addAnchor("Link here");
+        });
+//]]>
+</script>
+  </head>
+  <body>
+    <div id="content" class="wiki">
+      <div id="ts-main">
+      </div>
+    </div>
+
+    <div id="content" class="qa">
+      <h1>
+        <span class="elem-id">[TS#${ts.id}]</span> ${ts.title}
+      </h1>
+      <div class="description">
+        ${wiki_to_html(context, ts.description)}
+      </div>
+      <div class="buttons">
+        <form method="get" action="${href.qa('testsuite/edit', ts.id)}">
+          <div>
+            <input type="submit" value="${_('Edit')}" accesskey="e" />
+          </div>
+        </form>
+        <form method="post" action="${href.qa('testsuite/delete',ts.id)}">
+          <div>
+            <input type="submit" value="${_('Delete...')}" accesskey="d"/>
+          </div>
+        </form>
+        <form method="get" action="${href.qa('testcase/add')}">
+          <div>
+            <input type="submit" value="${_('Add test case...')}" accesskey="a"/>
+          </div>
+        </form>
+      </div>
+
+      <h2 class="report-result" py:if="paginator.has_more_pages">
+        Results <span class="numresults">(${paginator.displayed_items()})</span>
+      </h2>
+      <xi:include href="page_index.html" />
+      <table class="listing testcases">
+        <thead>
+          <tr>
+            <th>
+              id
+            </th>
+            <th>
+              title
+            </th>
+            <th>
+              date
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr py:for="tc in tc_list" class="odd">
+            <td>
+              <a title="details" href="/qa/testcase/show/${tc.id}">#$tc.id</a>
+            </td>
+            <td>
+              <a title="details" href="/qa/testcase/show/${tc.id}">$tc.title</a>
+            </td>
+            <td class="date">
+            </td>
+          </tr>
+        </tbody>
+      </table><xi:include href="page_index.html" />
+      <div py:if="message" class="system-message">
+        $message
+      </div>
+      <div py:if="numrows == 0" id="report-notfound">
+        No matches found.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title>
+      Test Cases Index
+    </title>
+    <meta py:if="defined('tc_list')" name="ROBOTS" content="NOINDEX" />
+    <script type="text/javascript">
+//<![CDATA[
+      jQuery(document).ready(function($) {
+        $('#content').find('h1,h2,h3,h4,h5,h6').filter('[id]').addAnchor('Link here');
+        $('#add').click(function(){
+            window.location ="${req.href.qa('testcase/add')}";
+        });
+      });
+    //]]>
+    </script>
+  </head>
+  <body>
+    <div id="content" class="qa">
+      <h1>
+        Test Cases
+      </h1>
+      <div class="description">
+        List of test cases.
+      </div>
+      <div class="buttons">
+        <input id="add" type="button" name="add" value="Add test case" />
+      </div>
+
+              <form id="query" action="${href.qa('testcase/index')}" method="GET">
+          <fieldset id="filters">
+            <legend class="foldable" style="cursor: pointer; ">
+              <a href="#no1">Test suites</a>
+            </legend>
+            <table summary="Test suites">
+              <tbody>
+                <tr style="height: 1px"><td colspan="4"></td></tr>
+              </tbody>
+              <tbody>
+                <tr class="testsuite">
+                  <th scope="row"><label>Test suite</label></th>
+                  <td class="mode">
+                    <!-- <select name="owner_mode">
+                      <option value="" selected="selected">is
+                      </option><option value="!">is not
+                      </option>
+                    </select> -->
+                  </td>
+                  <td class="filter">
+                    <select name="testsuite_id">
+                      <option py:for="ts in ts_list" value="${ts.id}" selected="${(testsuite_id == ts.id) and 'selected' or None}">${ts.title}</option>
+                    </select>
+                  </td>
+                  <td class="actions">
+                  </td>
+                </tr>
+              </tbody>            
+            </table>
+          </fieldset>
+          <p class="option">
+          <!-- <label for="max">Max items per page</label>
+          <input type="text" name="max" id="max" size="10" value="${query.max}" /> -->
+          </p>
+          <div class="buttons">
+            <input type="submit" name="filter" value="Filter" />
+          </div>
+          <hr />
+        </form>
+
+      <h2 class="report-result" py:if="paginator.has_more_pages">
+        Results <span class="numresults">(${paginator.displayed_items()})</span>
+      </h2>
+      <xi:include href="page_index.html" />
+        <py:for each="k,group in tc_list.items()">
+        <h2>$group.title</h2>
+        <table class="listing" id="complist">
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                Title
+              </th>
+              <th>
+                Date
+              </th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr py:for="tc in group.testcases">
+              <td class="default">
+                <a href="${req.href.qa('testcase/show', tc.id)}">$tc.id</a>
+              </td>
+              <td class="name">
+                <a href="${req.href.qa('testcase/show', tc.id)}">$tc.title</a>
+              </td>
+              <td class="default">
+              </td>
+              <td class="default">
+                <a href="${req.href.qa('testcase/edit', tc.id)}">edit</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </py:for>
+        <xi:include href="page_index.html" />        
+        <div py:if="message" class="system-message">
+          $message
+        </div>
+        <div py:if="numrows == 0" id="report-notfound">
+          No matches found.
+        </div>
+        <br style="clear: right" />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi=
+  "http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title></title>
+    <script type="text/javascript">
+      //<![CDATA[
+    jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").filter("[id]").addAnchor("Link here");
+        });
+//]]>
+</script>
+  </head>
+  <body>
+    <div id="content" class="qa wiki">
+      <h1 class="blog-title">
+        <span class="elem-id">[TC#${tc.id}]</span> ${tc.title}
+      </h1>
+      <div class="blog-body" xml:space="preserve">
+        <h2>Steps</h2>
+        ${wiki_to_html(context(tc.resource), tc.steps)}
+      </div>
+      <div class="blog-body" xml:space="preserve">
+        <h2>Acceptance</h2>
+        ${wiki_to_html(context(tc.resource), tc.acceptance)}
+      </div>
+      <div py:if="is_show" class="buttons">
+        <form  method="get" action="${href.qa('testcase/edit', tc.id)}">
+          <div>
+            <input type="submit" value="${_('Edit')}" accesskey="e" />
+          </div>
+        </form>
+        <form method="post" action="${href.qa('testcase/delete',tc.id)}">
+          <div>
+            <input type="submit" value="${_('Delete')}" accesskey="d" />
+          </div>
+        </form>
+        <form method="post" action="${href.qa('testcase/delete',tc.id)}">
+          <div>
+            <input type="submit" value="${_('Copy')}" accesskey="d" />
+          </div>
+        </form>
+      </div>
+      <!--<table class="listing" id="complist">
+        <thead>
+          <tr>
+            <th>
+              Result
+            </th>
+            <th>
+              Author
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr py:for="execution in execution_list">
+            <td class="default">
+              $execution.result
+            </td>
+            <td class="name">
+              $execution.author
+            </td>
+          </tr>
+        </tbody>
+      </table>-->
+      <br style="clear: right" />
+      <form py:if="is_execute" class="mod" method="post" id="modifytc" action="${req.href.qa('execution/add')}">
+        <input type="hidden" name="testrun_id" value="${testrun_id}" />
+        <input type="hidden" name="testcase_id" value="${tc.id}" />
+        <input type="hidden" name="author" value="${author}" />
+        <fieldset>
+          <legend>Defects</legend>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="defects"></label>
+              <p>
+              <textarea id="defects" name="defects" class="wikitext trac-resizable" rows="6" cols="60"></textarea>
+              </p>
+            </fieldset>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="result" value="${_('pass')}" /> 
+            <input type="submit" name="result" value="${_('fail')}" />
+          </div>
+        </fieldset>
+      </form>
+      <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
+    </div>
+  </body>
+</html>

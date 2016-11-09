@@ -1,0 +1,149 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi=
+  "http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title></title>
+    <script type="text/javascript">
+      //<![CDATA[
+    jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").filter("[id]").addAnchor("Link here");
+
+        $("input[name='to_assign']").change(function(){
+          var temp = $(this).val();
+
+          if($(this).is(':checked')){
+          $('<input>').attr('type','hidden').attr('name','tc_list')
+          .addClass('temp').val(temp).appendTo('#query');
+          }
+          else {
+          $('#query .temp').each(function(){
+            if($(this).val() == temp){
+            $(this).remove();
+            }
+            });
+          }
+          });
+
+        $('#query').submit(function(){
+          if($('#query .temp').length < 1){
+          alert('Select some TC from the list.');
+          return false;
+          }
+
+          if(!$('#author').val()){
+          alert('Select an author.');
+          return false;
+          }
+
+          return true;
+          });
+
+    });
+//]]>
+</script>
+  </head>
+  <body>
+    <div id="content" class="wiki">
+      <div id="qa-main">
+        <h1 class="qa-title">
+          <span class="elem-id">[TR#${tr.id}]</span> ${tr.title}
+        </h1>
+        <div class="qa-body" xml:space="preserve">
+          ${wiki_to_html(context(tr.resource), tr.description)}
+        </div>
+        <div class="buttons">
+          <form method="get" action="${href.qa('testrun/edit', tr.id)}">
+            <div>
+              <input type="submit" value="${_('Edit')}" accesskey="e" />
+            </div>
+          </form>
+        </div>
+        <form id="query" action="${href.qa('testrun/assign_testcases')}" method="POST">
+          <input type="hidden" name="testrun_id" value="${tr.id}"/>
+          <fieldset id="filters">
+            <legend class="foldable" style="cursor: pointer; ">
+              Assign
+            </legend>
+            <table summary="Test suites">
+              <tbody>
+                <tr style="height: 1px"><td colspan="4"></td></tr>
+              </tbody>
+              <tbody>
+                <tr class="testsuite">
+                  <th scope="row"><label>Users</label></th>
+                  <td class="mode">
+                    <!-- <select name="owner_mode">
+                      <option value="" selected="selected">is
+                      </option><option value="!">is not
+                      </option>
+                    </select> -->
+                  </td>
+                  <td class="filter">
+                    <select id="author" name="author">
+                      <option value="">--Select--</option>
+                      <option py:for="auth in author_list" value="${auth}">${auth}</option>
+                    </select>
+                  </td>
+                  <td class="actions">
+                  </td>
+                </tr>
+              </tbody>            
+            </table>
+          </fieldset>
+          <p class="option">
+          <!-- <label for="max">Max items per page</label>
+          <input type="text" name="max" id="max" size="10" value="${query.max}" /> -->
+          </p>
+          <div class="buttons">
+            <input type="submit" name="Update" value="Assign" />
+          </div>
+          <hr />
+        </form>
+        <py:for each="k,group in tc_list.items()">
+        <h2>$group.title</h2>
+        <table class="listing" id="complist">
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                Title
+              </th>
+              <th>
+                Assigned
+              </th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr py:for="tc in group.testcases">
+              <td class="default">
+                <a href="${req.href.qa('testcase/show', tc.id)}">$tc.id</a>
+              </td>
+              <td class="name">
+                <a href="${req.href.qa('testcase/show', tc.id)}">$tc.title</a>
+              </td>
+              <td class="default">
+                $tc.author
+              </td>
+              <td class="default">
+                <input name="to_assign" type="checkbox" value="$tc.id"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </py:for>
+        <xi:include href="page_index.html" />        
+        <div py:if="message" class="system-message">
+          $message
+        </div>
+        <div py:if="numrows == 0" id="report-notfound">
+          No matches found.
+        </div>
+        <br style="clear: right" />
+      </div>
+    </div>
+  </body>
+</html>

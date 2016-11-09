@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title>
+      Add/Edit Test Run
+    </title>
+  </head>
+  <body>
+    <div id="content" class="admin">
+      <h2>
+        Add/Edit Test Run
+      </h2>
+      <form class="mod" method="post" id="modifytr" action="${is_create and req.href.qa('testrun/add') or req.href.qa('testrun/edit', tr.id)}">
+        <fieldset>
+          <legend>Add/Edit Test Run:</legend>
+          <div class="field">
+            <label>Title:
+              <br />
+              <input type="text" name="title" value="${tr and tr.title or ''}" readonly="${readonly}" /></label>
+          </div>
+          <div class="field">
+            <label>Test plan:
+              <br />
+              <select name="testplan_id" py:attrs="create_dict">
+                <option py:for="tp in tp_list" value="${tp.id}">${tp.title}</option> 
+              </select>
+            </label>
+          </div>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="description">Description (you may use <a tabindex="42" href= "${href.wiki('WikiFormatting')}">WikiFormatting</a> here):</label>
+              <p>
+              <textarea id="description" name="description" class="wikitext trac-resizable" rows="6" cols="60" readonly="${readonly}">${tr and tr.description or ''}</textarea>
+              </p>
+            </fieldset>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="save" value="${_('Save')}" disabled="${readonly}" /><input type="button" onclick="javascript:window.location='${req.href.qa('testrun/index')}';" value="${_('Cancel')}"/>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
+  </body>
+</html>

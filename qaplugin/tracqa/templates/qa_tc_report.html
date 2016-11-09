@@ -1,0 +1,197 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title>
+      QA Report
+    </title>
+    <meta py:if="defined('tc_list')" name="ROBOTS" content="NOINDEX" />
+    <script type="text/javascript">
+      //<![CDATA[
+    jQuery(document).ready(function($) {
+        $('#content').find('h1,h2,h3,h4,h5,h6').filter('[id]').addAnchor('Link here');
+    });
+//]]>
+</script>
+  </head>
+  <body>
+    <div id="content" class="qa">
+      <h1>
+        QA Report
+      </h1>
+      <div class="description">
+        Report
+      </div>
+      <!-- <div py:if="description" id="description" xml:space="preserve">
+        ${wiki_to_html(context(report_resource), description)}
+      </div> -->
+      <form id="query" action="${req.href.qa('report/result')}" method="GET">
+        <fieldset id="filters">
+          <legend class="foldable" style="cursor: pointer; ">
+            <a href="#no1">Filters</a>
+          </legend>
+          <table summary="Query filters">
+            <tbody>
+              <tr style="height: 1px"><td colspan="4"></td></tr>
+            </tbody>
+            <tbody>
+              <tr class="testrun">
+                <th scope="row"><label>Test run</label></th>
+                <td class="mode">
+                  <!-- <select name="owner_mode">
+                    <option value="" selected="selected">is
+                    </option><option value="!">is not
+                    </option>
+                  </select> -->
+                </td>
+                <td class="filter">
+                  <select name="testrun_id">
+                    <option value=""></option>
+                    <py:for each="tr in tr_list">
+                    <option py:if="testrun_id and (testrun_id == tr.id)" value="${tr.id}" selected="selected">${tr.title}</option>
+                    <option py:if="not(testrun_id and (testrun_id == tr.id))" value="${tr.id}">${tr.title}</option>
+                    </py:for>
+                  </select>
+                </td>
+                <td class="actions">
+                  <!-- <input type="button" value="-"/> -->
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr class="testsuite">
+                <th scope="row"><label>Test suite</label></th>
+                <td class="mode">
+                  <!-- <select name="owner_mode">
+                    <option value="" selected="selected">is
+                    </option><option value="!">is not
+                    </option>
+                  </select> -->
+                </td>
+                <td class="filter">
+                  <select name="testsuite_id">
+                    <option value=""></option>
+                    <py:for each="ts in ts_list">
+                    <option py:if="testsuite_id and (testsuite_id == ts.id)" value="${ts.id}" selected="selected">${ts.title}</option>
+                    <option py:if="not(testsuite_id and (testsuite_id == ts.id))" value="${ts.id}">${ts.title}</option>
+                    </py:for>
+                  </select>
+                </td>
+                <td class="actions">
+                  <!--<input type="button" value="-"/>-->
+                </td>
+              </tr>
+            </tbody>            
+            <tbody>
+              <tr class="author">
+                <th scope="row"><label>Assigned to</label></th>
+                <td class="mode">
+                  <!--<select name="author_mode">
+                    <option value="">is</option>
+                    <option value="!">is not</option>
+                  </select>-->
+                </td>
+                <td class="filter">
+                  <select name="author">
+                    <option value=""></option>
+                    <py:for each="auth in author_list">
+                    <option py:if="author and (author == auth)" value="${auth}" selected="selected">${auth}</option>
+                    <option py:if="not (author and (author == auth))" value="${auth}">${auth}</option>
+                    </py:for>
+                  </select>
+                </td>
+                <td class="actions">
+                  <!-- <input type="button" value="-"/> -->
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr class="status">
+                <th scope="row"><label>Status</label></th>
+                <td class="filter" colspan="2">
+                  <input type="checkbox" id="status_0" name="status" value="0"/>
+                  <label for="status_0">pending</label>
+                  <input type="checkbox" id="status_1" name="status" value="1"/>
+                  <label for="status_1">passed</label>
+                  <input type="checkbox" id="status_2" name="status" value="2"/>
+                  <label for="status_2">failed</label>
+                </td>
+                <td class="actions">
+                  <!-- <input type="button" value="-" /> -->
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr class="actions">
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+
+        <p class="option">
+        <!-- <label for="max">Max items per page</label>
+        <input type="text" name="max" id="max" size="10" value="${query.max}" /> -->
+        </p>
+        <div class="buttons">
+          <input type="submit" name="Update" value="Update" />
+        </div>
+        <hr />
+      </form>
+      <h2 class="report-result" py:if="paginator.has_more_pages">
+        Results <span class="numresults">(${paginator.displayed_items()})</span>
+      </h2>
+      <py:for each="(k,res) in res_list.items()">
+      <h2>${res[0]['title']}</h2>
+      <table class="listing testcases">
+        <thead>
+          <tr>
+            <th>
+              id
+            </th>
+            <th>
+              title
+            </th>
+            <th>
+              assignee
+            </th>
+            <th>
+              execution
+            </th>
+            <th>
+              result
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr py:for="tc in res[1]" class="odd">
+            <td>
+              <a title="details" href="${req.href.qa('testcase/show', tc['id'])}">#${tc['id']}</a>
+            </td>
+            <td>
+              <a title="details" href="${req.href.qa('testcase/show', tc['id'])}">${tc['title']}</a>
+            </td>
+            <td>
+              ${tc['author_assigned'] or ''}
+            </td>
+            <td>
+              ${tc['author_execution'] or ''}
+            </td>
+            <td>
+              ${tc['result'] or ''}
+            </td>
+            <td>
+              <a title="details" href="${'%s?%s=%s' % (req.href.qa('testcase/show',  tc['id']) , 'testrun_id' , testrun_id)}">execute</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </py:for>
+      <xi:include href="page_index.html" />
+      <div py:if="message" class="system-message">
+        $message
+      </div>
+      <div py:if="numrows == 0" id="report-notfound">
+        No matches found.
+      </div>
+    </div>
+  </body>
+</html>

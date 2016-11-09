@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title>
+      Add/Edit Test Case
+    </title>
+  </head>
+  <body>
+    <div id="content" class="qa">
+      <h1>
+       Add/Edit Test Case
+      </h1>
+      <form class="mod" method="post" id="modifytc" action="${is_create and req.href.qa('testcase/add') or req.href.qa('testcase/edit', tc.id)}">
+        <fieldset>
+          <legend>Add/Edit TestCase:</legend>
+          <div class="field">
+            <label>Title:
+              <br />
+              <input type="text" name="title" value="${tc and tc.title or ''}" /></label>
+          </div>
+          <div class="field">
+            <label>Test Suite:
+              <br />
+              <select name="testsuite_id">
+                <option value=""></option>
+                <option py:for="ts in ts_list" value="${ts.id}" selected="${ tc and ((ts.id == tc.testsuite_id) and 'selected' or None) or None}">${ts.title}</option>
+             </select></label>
+          </div>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="steps">Steps (see <a tabindex="42" href=
+                  "${href.wiki('WikiFormatting')}">WikiFormatting</a>):</label>
+              <p>
+              <textarea id="steps" name="steps" class="wikitext trac-resizable" rows="6" cols="60">${tc and tc.steps or ''}</textarea>
+              </p>
+            </fieldset>
+            <fieldset class="iefix">
+              <label for="steps">Acceptance:</label>
+              <p>
+              <textarea id="acceptance" name="acceptance" class="wikitext trac-resizable" rows="6" cols="60">${tc and tc.acceptance or ''}</textarea>
+              </p>
+            </fieldset>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="save" value="${_('Save')}"/> <input type="button" onclick="javascript:window.location='${req.href.qa('testcase/index')}';" value="${_('Cancel')}"/>
+          </div>
+        </fieldset>
+      </form>
+      </div><script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js">
+    </script>
+  </body>
+</html>

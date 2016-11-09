@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/" xmlns:xi=
+  "http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" /><xi:include href="macros.html" />
+  <head>
+    <title>
+      Test Plan Index
+    </title>
+    <script type="text/javascript">
+      //<![CDATA[
+    jQuery(document).ready(function($) {
+        $('#content').find('h1,h2,h3,h4,h5,h6').filter('[id]').addAnchor('Link here');
+        $('#add').click(function(){
+          window.location ="${req.href.qa('testplan/add')}";
+          });
+        });
+//]]>
+</script>
+  </head>
+  <body>
+    <div id="content" class="qa">
+      <h2>
+        Test Plans
+      </h2>
+      <div class="buttons">
+        <input id="add" type="button" name="add" value="Add test plan" />
+      </div>
+      <table class="listing" id="complist">
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              Title
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr py:for="tp in tp_list">
+            <td class="default">
+              <a href="${req.href.qa('testplan/show', tp.id)}">$tp.id</a>
+            </td>
+            <td class="name">
+              <a href="${req.href.qa('testplan/show', tp.id)}">$tp.title</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br style="clear: right" />
+    </div>
+  </body>
+</html>
